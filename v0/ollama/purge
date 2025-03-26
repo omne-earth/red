@@ -1,0 +1,7 @@
+#!/bin/bash
+set -ueox pipefail 
+eval "$(dirname $(realpath $0))/clean"
+podman image rm $(podman images --filter=reference='ollama:*' --format "{{.ID}}") || true
+podman image rm $(podman images --filter=reference='open-webui:*' --format "{{.ID}}") || true
+rm -rf "$(dirname $(realpath $0))/ollama"
+rm -rf "$(dirname $(realpath $0))/open-webui"

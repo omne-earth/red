@@ -1,0 +1,4 @@
+#!/bin/bash
+set -ueox pipefail
+podman run --rm --device nvidia.com/gpu=all --security-opt=label=disable nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi
+podman image rm $(podman images --filter=reference='cuda:*' --format "{{.ID}}")

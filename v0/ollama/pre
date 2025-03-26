@@ -1,0 +1,4 @@
+#!/bin/bash
+set -ueox pipefail
+sudo dnf install -y nvidia-container-toolkit
+sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml

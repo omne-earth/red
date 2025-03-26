@@ -1,0 +1,11 @@
+#!/bin/bash
+set -ueox pipefail 
+podman container stop open-webui || true
+podman container rm --force open-webui
+
+podman container stop ollama || true
+podman container rm --force ollama
+
+podman network rm --force ollama_default
+podman pod rm --force pod_ollama
+

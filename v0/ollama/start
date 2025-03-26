@@ -1,0 +1,6 @@
+#!/bin/bash
+set -ueox pipefail
+sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
+podman container start ollama
+podman container start open-webui
+podman pod start pod_ollama

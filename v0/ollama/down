@@ -1,0 +1,3 @@
+#!/bin/bash
+set -ueox pipefail
+podman compose -f "$(dirname $(realpath $0))/compose.yml" down

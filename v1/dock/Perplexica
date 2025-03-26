@@ -1,0 +1,27 @@
+FROM node:20.18.0-slim AS builder
+
+WORKDIR /home/perplexica
+
+COPY yard/Perplexica/package.json yard/Perplexica/yarn.lock ./
+RUN yarn install --frozen-lockfile --network-timeout 600000
+
+COPY yard/Perplexica/tsconfig.json yard/Perplexica/next.config.mjs yard/Perplexica/next-env.d.ts yard/Perplexica/postcss.config.js yard/Perplexica/drizzle.config.ts yard/Perplexica/tailwind.config.ts ./
+COPY yard/Perplexica/src ./src
+COPY yard/Perplexica/public ./public
+
+RUN mkdir -p /home/perplexica/data
+RUN yarn build
+
+FROM node:20.18.0-slim
+
+WORKDIR /home/perplexica
+
+COPY --from=builder /home/perplexica/public ./public
+COPY --from=builder /home/perplexica/.next/static ./public/_next/static
+
+COPY --from=builder /home/perplexica/.next/standalone ./
+COPY --from=builder /home/perplexica/data ./data
+
+RUN mkdir /home/perplexica/uploads
+
+CMD ["node", "server.js"]

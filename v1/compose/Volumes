@@ -1,0 +1,5 @@
+volumes:
+  ollama: {}
+  perplexica-data: {}
+  perplexica-uploads: {}
+  

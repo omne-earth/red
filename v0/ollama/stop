@@ -1,0 +1,6 @@
+#!/bin/bash
+set -ueox pipefail
+podman container stop open-webui
+podman container stop ollama
+podman pod stop pod_ollama
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+set -ueox pipefail
+mkdir -p "$(dirname $(realpath $0))/volumes/ollama"
+mkdir -p "$(dirname $(realpath $0))/volumes/open-webui"
+sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml
+podman compose -f "$(dirname $(realpath $0))/compose.yml" up -d

@@ -1,0 +1,38 @@
+#!/bin/bash
+set -ueox pipefail
+VOLUMES="volumes"
+YARD="yard"
+DOCK="dock"
+PERPLEXICA="Perplexica"
+RED="Red"
+
+# persistence
+mkdir -p "${VOLUMES}/ollama"
+mkdir -p "${VOLUMES}/perplexica-data"
+mkdir -p "${VOLUMES}/perplexica-uploads"
+
+# state-agnostic
+rm -rf "${YARD}/${PERPLEXICA}"
+mkdir -p "${YARD}/${PERPLEXICA}"
+git clone https://github.com/ItzCrazyKns/Perplexica.git "${YARD}/${PERPLEXICA}"
+
+# stateful
+cp --force "config/${PERPLEXICA}" "${YARD}/${PERPLEXICA}/config.toml"
+
+# bulid the ship
+# podman image rm docker.io/itzcrazykns1337/perplexica
+# podman image rm docker.io/searxng/searxng
+
+rm -rf "${RED}"
+touch "${RED}"
+cat "compose/Services" >> "${RED}"
+printf "\n\n" >> "${RED}"
+sed '/services:/d' "compose/Ollama" >> "${RED}"
+printf "\n\n" >> "${RED}"
+sed '/services:/d' "compose/Perplexica" >> "${RED}"
+printf "\n\n" >> "${RED}"
+cat "compose/Networks" >> "${RED}"
+printf "\n\n" >> "${RED}"
+cat "compose/Volumes" >> "${RED}"
+printf "\n\n" >> "${RED}"
+podman compose -f "${RED}" up -d --no-deps --build 

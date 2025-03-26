@@ -1,6 +1,5 @@
 version: "3.0"
 services:
-
   ollama:
     image: docker.io/ollama/ollama:latest
     container_name: ollama
@@ -8,20 +7,22 @@ services:
       - nvidia.com/gpu=all
     networks:
       - default
-    security-opt:
-      - label=disable
     volumes:
-      - ollama:/root/.ollama:z
+      - ./volumes/ollama:/root/.ollama:z
     expose:
       - 11434
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1
     deploy:
       resources:
+        limits:
+          cpus: '8'
+          memory: 32g
         reservations:
           devices:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
@@ -29,14 +30,17 @@ services:
       - ollama
     networks:
       - default
-    security-opt:
-      - label=disable
     volumes:
-      - open-webui:/app/backend/data:z
+      - ./volumes/open-webui:/app/backend/data:z
     ports:
       - 8080:8080
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 32g
     
 volumes:
   ollama: {}
