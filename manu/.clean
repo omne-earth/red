@@ -1,0 +1,13 @@
+#!/bin/sh
+set -ueox pipefail
+
+podman container stop open-webui
+podman container stop ollama
+podman container rm open-webui
+podman container rm ollama
+
+podman network rm manu_default
+podman pod rm pod_manu
+
+podman image rm ollama:latest
+podman image rm open-webui:main

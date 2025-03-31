@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eox pipefail
+COMMAND=$@
+podman exec -it ollama /bin/sh -c "${COMMAND}"

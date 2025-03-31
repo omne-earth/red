@@ -1,0 +1,5 @@
+#!/bin/sh
+set -ueox pipefail
+./.clean
+podman volume rm manu_ollama
+podman volume rm manu_open-webui
