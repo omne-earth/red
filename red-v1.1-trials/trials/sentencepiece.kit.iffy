@@ -1,0 +1,34 @@
+#!/bin/bash
+set -ueox pipefail
+
+#$ install global packages
+sudo dnf -y install gcc gcc-g++ cmake curl wget git
+
+#$ install sentencepiece
+toolbox run -c "${TOOLBOX}" /bin/bash -c "\
+    ./sentencepiece.tool
+"
+
+
+#$ note
+#$ sentencepiece misses `L21: #include <cstdint>` in src/sentencepiece_processor.h
+#$ remediation: build sentencepiece and install as global package, remove from requirements for gemma_pytorch
+#$ end
+
+#$ install sentencepiece build dependencies
+sudo dnf -y install gperftools python-devel
+pip install setuptools
+
+#$ make and install sentencepiece
+rm -rf ./sentencepiece
+git clone git@github.com:action-project-network/sentencepiece.git
+mkdir -p sentencepiece/build
+cd sentencepiece/build
+cmake .. -DSPM_ENABLE_SHARED=OFF -DCMAKE_INSTALL_PREFIX=./root
+make install
+cd ../../
+
+#$ install sentencepiece as global pip package
+cd sentencepiece/python
+python setup.py bdist_wheel
+pip install dist/sentencepiece*.whl

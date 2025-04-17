@@ -1,0 +1,31 @@
+#!/bin/bash
+set -ueox pipefail
+TOOL=${1}
+
+#$ clean
+toolbox rm "${TOOL}" && true
+podman container rm "${TOOL}" --force && true
+toolbox create "${TOOL}" && true
+
+#$ create venv
+toolbox run -c "${TOOL}" /bin/bash -c "\
+    rm -rf ."${TOOL}" &&\
+    python -m venv ."${TOOL}" &&\
+    source ./."${TOOL}"/bin/activate &&\
+    pip install --upgrade pip
+"
+
+#$ install pytorch
+toolbox run -c "${TOOL}" /bin/bash -c "\
+    source ./."${TOOL}"/bin/activate &&\
+    pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
+"
+
+#$ install tool
+toolbox run -c "${TOOL}" /bin/bash -c "\
+    $PWD
+    ./${TOOL}.tool
+"
+
+#$ enter the toolbox
+toolbox enter "${TOOL}"

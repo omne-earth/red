@@ -1,0 +1,6 @@
+# toolbox for swift etc
+https://containertoolbx.org/install/
+
+# workflow
+# toolbox create --image registry.fedoraproject.org/fedora-toolbox-variant:41 --container blue-cosmos
+# sudo dnf install @blue-cosmos
